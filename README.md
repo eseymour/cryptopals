@@ -19,7 +19,7 @@ section also lists the name of the relevant package within the
 | #   | Challenge                        | Completed        | Package       |
 | --- | -------------------------------- | ---------------- | ------------- |
 | 1   | [Convert hex to base64][1]       | January 19, 2018 | `hexToBase64` |
-| 2   | [Fixed XOR][2]                   |                  |               |
+| 2   | [Fixed XOR][2]                   | Work In Progress | `fixedXor`    |
 | 3   | [Single-byte XOR cipher][3]      |                  |               |
 | 4   | [Detect single-character XOR][4] |                  |               |
 | 5   | [Implement repeating-key XOR][5] |                  |               |
