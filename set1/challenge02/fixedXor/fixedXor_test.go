@@ -6,6 +6,8 @@ import (
 	"testing"
 )
 
+// must is a helper that wraps calls returning ([]byte, error), panicking if the
+// error is non-nil.
 func must(data []byte, err error) []byte {
 	if err != nil {
 		panic(err)
@@ -18,19 +20,19 @@ func TestFixedXor(t *testing.T) {
 		plaintext, key, want []byte
 		fails                bool
 	}{
-		{
+		{ // Zero value case
 			[]byte{},
 			[]byte{},
 			[]byte{},
 			false,
 		},
-		{
+		{ // Challenge case
 			must(hex.DecodeString("1c0111001f010100061a024b53535009181c")),
 			must(hex.DecodeString("686974207468652062756c6c277320657965")),
 			must(hex.DecodeString("746865206b696420646f6e277420706c6179")),
 			false,
 		},
-		{
+		{ //
 			must(hex.DecodeString("deadbeef")),
 			must(hex.DecodeString("deface")),
 			must(hex.DecodeString("cafe")),
