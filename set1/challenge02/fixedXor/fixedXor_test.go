@@ -30,6 +30,12 @@ func TestFixedXor(t *testing.T) {
 			must(hex.DecodeString("746865206b696420646f6e277420706c6179")),
 			false,
 		},
+		{
+			must(hex.DecodeString("deadbeef")),
+			must(hex.DecodeString("deface")),
+			must(hex.DecodeString("cafe")),
+			true,
+		},
 	}
 
 	for _, c := range cases {
