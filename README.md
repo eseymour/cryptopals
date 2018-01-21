@@ -16,16 +16,16 @@ section also lists the name of the relevant package within the
 
 ### Set 1
 
-| #   | Challenge                        | Completed        | Package         |
-| --- | -------------------------------- | ---------------- | --------------- |
-| 1   | [Convert hex to base64][1]       | January 19, 2018 | `hexToBase64`   |
-| 2   | [Fixed XOR][2]                   | January 19, 2018 | `test/fixedXOR` |
-| 3   | [Single-byte XOR cipher][3]      |                  |                 |
-| 4   | [Detect single-character XOR][4] |                  |                 |
-| 5   | [Implement repeating-key XOR][5] |                  |                 |
-| 6   | [Break repeating-key XOR][6]     |                  |                 |
-| 7   | [AES in ECB mode][7]             |                  |                 |
-| 8   | [Detect AES in ECB mode][8]      |                  |                 |
+| #   | Challenge                        | Completed        | Package             |
+| --- | -------------------------------- | ---------------- | ------------------- |
+| 1   | [Convert hex to base64][1]       | January 19, 2018 | `hexToBase64`       |
+| 2   | [Fixed XOR][2]                   | January 19, 2018 | `test/fixedXOR`     |
+| 3   | [Single-byte XOR cipher][3]      |                  |                     |
+| 4   | [Detect single-character XOR][4] |                  |                     |
+| 5   | [Implement repeating-key XOR][5] | January 20, 1018 | `test/repeatingXOR` |
+| 6   | [Break repeating-key XOR][6]     |                  |                     |
+| 7   | [AES in ECB mode][7]             |                  |                     |
+| 8   | [Detect AES in ECB mode][8]      |                  |                     |
 
 [1]: https://cryptopals.com/sets/1/challenges/1
 [2]: https://cryptopals.com/sets/1/challenges/2
