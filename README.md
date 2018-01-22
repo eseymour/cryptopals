@@ -1,4 +1,4 @@
-# Cryptopals Crypto Challenges
+# Cryptopals Crypto Challenge Solutions
 
 [![GoDoc](https://godoc.org/github.com/eseymour/cryptopals?status.svg)](https://godoc.org/github.com/eseymour/cryptopals/)
 [![Build Status](https://travis-ci.org/eseymour/cryptopals.svg?branch=master)](https://travis-ci.org/eseymour/cryptopals)
