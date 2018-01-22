@@ -33,7 +33,7 @@ func BreakXOREncryptByteKey(ciphertext []byte) (key byte, score float64) {
 		xor.EncryptByteKey(plaintext, ciphertext, byte(candidate))
 
 		var candidateFrequencies [26]float64
-		var count float64
+		count := 0
 		for _, c := range plaintext {
 			switch {
 			case 'a' <= c && c <= 'z':
@@ -49,13 +49,13 @@ func BreakXOREncryptByteKey(ciphertext []byte) (key byte, score float64) {
 
 		var expectedFrequencies [26]float64
 		for i, p := range englishDistribution {
-			expectedFrequencies[i] = p * count
+			expectedFrequencies[i] = p * float64(count)
 		}
 
-		// Scores are ChiSquare and multiplied by a factor that is inversely
-		// proportional to the number of alphabet characters in the plaintext
+		// Scores are ChiSquare and multiplied by the ratio of plaintext length and
+		// number of alphabet characters found
 		candidateScore := stat.ChiSquare(candidateFrequencies[:], expectedFrequencies[:])
-		candidateScore *= float64(len(plaintext)) / count
+		candidateScore *= float64(len(plaintext)) / float64(count)
 
 		if candidateScore < score {
 			score = candidateScore
