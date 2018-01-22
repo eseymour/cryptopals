@@ -25,8 +25,8 @@ var englishDistribution = [26]float64{
 // BreakXOREncryptByteKey finds byte key that is most likely to be the actual
 // key to decode the ciphertext using character frequency analysis from English
 // text. Lower scores indicate greater confidence that the key is correct
-func BreakXOREncryptByteKey(ciphertext []byte) (key byte, score float64) {
-	score = math.Inf(0)
+func BreakXOREncryptByteKey(ciphertext []byte) (key byte, chiSquare float64) {
+	score := math.Inf(0)
 
 	plaintext := make([]byte, len(ciphertext))
 	for candidate := 0; candidate <= math.MaxUint8; candidate++ {
@@ -54,14 +54,15 @@ func BreakXOREncryptByteKey(ciphertext []byte) (key byte, score float64) {
 
 		// Scores are ChiSquare and multiplied by the ratio of plaintext length and
 		// number of alphabet characters found
-		candidateScore := stat.ChiSquare(candidateFrequencies[:], expectedFrequencies[:])
-		candidateScore *= float64(len(plaintext)) / float64(count)
+		candidateChiSquare := stat.ChiSquare(candidateFrequencies[:], expectedFrequencies[:])
+		candidateScore := candidateChiSquare * float64(len(plaintext)) / float64(count)
 
 		if candidateScore < score {
 			score = candidateScore
+			chiSquare = candidateChiSquare
 			key = byte(candidate)
 		}
 	}
 
-	return key, score
+	return key, chiSquare
 }
