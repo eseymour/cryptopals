@@ -24,7 +24,7 @@ var englishDistribution = [26]float64{
 
 // BreakXOREncryptByteKey finds byte key that is most likely to be the actual
 // key to decode the ciphertext using character frequency analysis from English
-// text. Lower scores indicate greater confidence that the key is correct
+// text. Lower chiSquare indicate greater confidence that the key is correct
 func BreakXOREncryptByteKey(ciphertext []byte) (key byte, chiSquare float64) {
 	score := math.Inf(0)
 
