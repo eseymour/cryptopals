@@ -1,49 +1,59 @@
 package xor
 
-import "strconv"
+import (
+	"fmt"
+)
 
-// KeySizeError records an error when a key with a size not matching function
-// constraints is passed.
-type KeySizeError int
+const (
+	keyParam = "key"
+	dstParam = "dst"
+)
 
-func (k KeySizeError) Error() string {
-	return "crypto/xor: invalid key size " + strconv.Itoa(int(k))
+// SizeError records an error when the size of a parameter does not match the
+// the constraints of the function
+type SizeError struct {
+	size  int
+	param string
 }
 
-// EncryptRepeatingKey returns the result of XORing the byte slice plaintext
-// with the byte slice key as a repeating key. Encrypt expects key to have a
-// non-zero length. This is a more general XOR cipher and the functions
-// EncryptFixedKey and EncryptByteKey are provided as helpers.
-func EncryptRepeatingKey(plaintext, key []byte) ([]byte, error) {
+func (s SizeError) Error() string {
+	return fmt.Sprintf("crypto/xor: invalid size %d for parameter %s", s.size, s.param)
+}
+
+// EncryptRepeatingKey XORs each byte from src with bytes from key as a
+// repeating key, storing the result in dst. Dst and src may point to the same
+// memory. EncryptRepeatingKey expects key to have a non-zero length and dst to
+// be at least as long as src, retuning errors otherwise. EncryptRepeatingKey is
+// a more general XOR cipher and the functions EncryptFixedKey and
+// EncryptByteKey are provided as helpers.
+func EncryptRepeatingKey(dst, src, key []byte) error {
 	if len(key) == 0 {
-		return nil, KeySizeError(0)
+		return SizeError{0, keyParam}
+	}
+	if len(dst) < len(src) {
+		return SizeError{len(dst), dstParam}
 	}
 
-	ciphertext := make([]byte, len(plaintext))
 	keyLen := len(key)
-
-	for i := range plaintext {
-		ciphertext[i] = plaintext[i] ^ key[i%keyLen]
+	for i := range src {
+		dst[i] = src[i] ^ key[i%keyLen]
 	}
 
-	return ciphertext, nil
+	return nil
 }
 
-// EncryptFixedKey returns the result of XORing the two equal length byte slices
-// plaintext and key. EncryptFixedKey expects keys to have non-zero
-// lengths and lengths greater than or equal to to plaintext lengths.
-func EncryptFixedKey(plaintext, key []byte) ([]byte, error) {
-	if len(plaintext) > len(key) {
-		return nil, KeySizeError(len(key))
+// EncryptFixedKey is the same as EncryptRepeatingKey with the added constraint
+// that key is at least as long as src.
+func EncryptFixedKey(dst, src, key []byte) error {
+	if len(dst) > len(key) {
+		return SizeError{len(key), keyParam}
 	}
 
-	return EncryptRepeatingKey(plaintext, key)
+	return EncryptRepeatingKey(dst, src, key)
 }
 
-// EncryptByteKey returns the result of XORing the byte slice plaintext with a
-// single byte key.
-func EncryptByteKey(plaintext []byte, key byte) []byte {
-	ciphertext, _ := EncryptRepeatingKey(plaintext, []byte{key})
-
-	return ciphertext
+// EncryptByteKey is the same as EncryptRepeatingKey, execpt key is passed in as
+// a byte slice with a length of 1
+func EncryptByteKey(dst, src []byte, key byte) error {
+	return EncryptRepeatingKey(dst, src, []byte{key})
 }

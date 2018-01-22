@@ -13,18 +13,19 @@ import (
 // github.com/eseymour/cryptopals/pkg/crypto/xor has more extensive tests.
 func TestFixedXOR(t *testing.T) {
 
-	plaintext := b.Must(hex.DecodeString("1c0111001f010100061a024b53535009181c"))
+	src := b.Must(hex.DecodeString("1c0111001f010100061a024b53535009181c"))
 	key := b.Must(hex.DecodeString("686974207468652062756c6c277320657965"))
 	want := b.Must(hex.DecodeString("746865206b696420646f6e277420706c6179"))
 	fails := false
 
-	got, err := xor.EncryptFixedKey(plaintext, key)
+	got := make([]byte, len(src))
+	err := xor.EncryptFixedKey(got, src, key)
 	failed := err != nil
 
 	switch {
 	case failed != fails:
-		t.Errorf("xor.EncryptFixedKey(%#v, %#v) failure: %#v, want %#v", plaintext, key, failed, fails)
+		t.Errorf("xor.EncryptFixedKey(%x, %x, %x) failure: %t, want %t", got, src, key, failed, fails)
 	case !failed && !bytes.Equal(got, want):
-		t.Errorf("xor.EncryptFixedKey(%#v, %#v) == %#v, want %#v", plaintext, key, got, want)
+		t.Errorf("xor.EncryptFixedKey(%x, %x, %x) == %x, want %x", got, src, key, got, want)
 	}
 }

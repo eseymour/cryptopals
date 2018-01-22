@@ -11,8 +11,8 @@ import (
 // variableLengthKeyCase is a shared type between repeating key and fixed key
 // cases, and used to add cases from other case types.
 type variableLengthKeyCase struct {
-	plaintext, key, want []byte
-	err                  error
+	src, key, want []byte
+	err            error
 }
 
 // Test cases
@@ -34,7 +34,7 @@ var (
 			[]byte{},
 			[]byte{},
 			nil,
-			KeySizeError(0),
+			SizeError{0, keyParam},
 		},
 	}
 	fixedKeyCases = []variableLengthKeyCase{
@@ -60,13 +60,13 @@ var (
 			b.Must(hex.DecodeString("deadbeef")),
 			b.Must(hex.DecodeString("cafe")),
 			nil,
-			KeySizeError(2),
+			SizeError{2, keyParam},
 		},
 	}
 	byteKeyCases = []struct {
-		plaintext []byte
-		key       byte
-		want      []byte
+		src  []byte
+		key  byte
+		want []byte
 	}{
 		{ // Challenge 3 spoilers
 			b.Must(hex.DecodeString("1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736")),
@@ -97,38 +97,44 @@ func TestEncryptRepeatingKey(t *testing.T) {
 
 	// Add single byte key cases
 	for _, c := range byteKeyCases {
-		cases = append(cases, variableLengthKeyCase{c.plaintext, []byte{c.key}, c.want, nil})
+		cases = append(cases, variableLengthKeyCase{c.src, []byte{c.key}, c.want, nil})
 	}
 
 	// Run tests
 	for _, c := range cases {
-		got, err := EncryptRepeatingKey(c.plaintext, c.key)
+		got := make([]byte, len(c.src))
+		err := EncryptRepeatingKey(got, c.src, c.key)
 		switch {
 		case err != c.err:
-			t.Errorf("EncryptRepeatingKey(%x, %x) error == %v, want %v", c.plaintext, c.key, err, c.err)
+			t.Errorf("EncryptRepeatingKey(%x, %x, %x) error == %v, want %v", got, c.src, c.key, err, c.err)
 		case err == nil && !bytes.Equal(got, c.want):
-			t.Errorf("EncryptRepeatingKey(%x, %x) == %x, want %x", c.plaintext, c.key, got, c.want)
+			t.Errorf("EncryptRepeatingKey(%x, %x, %x) == %x, want %x", got, c.src, c.key, got, c.want)
 		}
 	}
 }
 
 func TestEncryptFixedKey(t *testing.T) {
 	for _, c := range fixedKeyCases {
-		got, err := EncryptFixedKey(c.plaintext, c.key)
+		got := make([]byte, len(c.src))
+		err := EncryptFixedKey(got, c.src, c.key)
 		switch {
 		case err != c.err:
-			t.Errorf("EncryptFixedKey(%x, %x) error == %v, want %v", c.plaintext, c.key, err, c.err)
+			t.Errorf("EncryptFixedKey(%x, %x, %x) error == %v, want %v", got, c.src, c.key, err, c.err)
 		case err == nil && !bytes.Equal(got, c.want):
-			t.Errorf("EncryptFixedKey(%x, %x) == %x, want %x", c.plaintext, c.key, got, c.want)
+			t.Errorf("EncryptFixedKey(%x, %x, %x) == %x, want %x", got, c.src, c.key, got, c.want)
 		}
 	}
 }
 
 func TestEncryptByteKey(t *testing.T) {
 	for _, c := range byteKeyCases {
-		var got = EncryptByteKey(c.plaintext, c.key)
-		if !bytes.Equal(got, c.want) {
-			t.Errorf("EncryptByteKey(%x, %x) == %x, want %x", c.plaintext, c.key, got, c.want)
+		got := make([]byte, len(c.src))
+		err := EncryptByteKey(got, c.src, c.key)
+		switch {
+		case err != nil:
+			t.Errorf("EncryptRepeatingKey(%x, %x, %x) error == %v, want %v", got, c.src, c.key, err, nil)
+		case !bytes.Equal(got, c.want):
+			t.Errorf("EncryptByteKey(%x, %x, %x) == %x, want %x", got, c.src, c.key, got, c.want)
 		}
 	}
 }
