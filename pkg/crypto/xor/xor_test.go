@@ -102,6 +102,7 @@ func TestEncryptRepeatingKey(t *testing.T) {
 
 	// Run tests
 	for _, c := range cases {
+		// Sufficient dst size
 		got := make([]byte, len(c.src))
 		err := EncryptRepeatingKey(got, c.src, c.key)
 		switch {
@@ -109,6 +110,14 @@ func TestEncryptRepeatingKey(t *testing.T) {
 			t.Errorf("EncryptRepeatingKey(%x, %x, %x) error == %v, want %v", got, c.src, c.key, err, c.err)
 		case err == nil && !bytes.Equal(got, c.want):
 			t.Errorf("EncryptRepeatingKey(%x, %x, %x) == %x, want %x", got, c.src, c.key, got, c.want)
+		}
+
+		// Possibly short dst, test for dst SizeErrors
+		got = nil
+		err = EncryptRepeatingKey(got, c.src, c.key)
+		dstErr := SizeError{len(got), dstParam}
+		if len(got) < len(c.src) && c.err == nil && err != dstErr {
+			t.Errorf("EncryptRepeatingKey(%x, %x, %x) error == %v, want %v", got, c.src, c.key, err, dstErr)
 		}
 	}
 }
