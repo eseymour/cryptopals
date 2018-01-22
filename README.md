@@ -1,6 +1,7 @@
 # Cryptopals Crypto Challenges
 
 [![GoDoc](https://godoc.org/github.com/eseymour/cryptopals?status.svg)](https://godoc.org/github.com/eseymour/cryptopals/)
+[![Build Status](https://travis-ci.org/eseymour/cryptopals.svg?branch=master)](https://travis-ci.org/eseymour/cryptopals)
 
 This repository contains programs written in [Go](https://golang.org)
 to solve the [Crytopals Crypto Challenges](https://cryptopals.com).
